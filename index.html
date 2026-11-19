@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0e14" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <title>Orbital Fifths — Songwriter &amp; Melody Studio</title>
   <link rel="stylesheet" href="css/styles.css" />
   <script defer src="js/theory.js"></script>
@@ -14,21 +17,21 @@
   <script defer src="js/app.js"></script>
 </head>
 <body>
-  <div class="studio-app">
+  <div id="studio-app" class="studio-app" data-mobile-view="wheel">
     <!-- Top Studio Header -->
     <header class="studio-header">
-      <div class="brand-block">
-        <div class="brand-mark" aria-hidden="true">
-          <div class="brand-mark-inner">V</div>
+      <div class="header-primary-row">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">
+            <div class="brand-mark-inner">V</div>
+          </div>
+          <div class="brand-titles">
+            <span class="brand-name">Orbital Fifths</span>
+            <input id="song-title-input" class="song-title-input" type="text" value="Untitled Song Sketch" aria-label="Song title" />
+          </div>
         </div>
-        <div class="brand-titles">
-          <span class="brand-name">Orbital Fifths</span>
-          <input id="song-title-input" class="song-title-input" type="text" value="Untitled Song Sketch" aria-label="Song title" />
-        </div>
-      </div>
 
-      <div class="header-controls">
-        <div class="control-group">
+        <div class="control-group header-key-group">
           <span class="control-label">Key</span>
           <select id="key-root-select" class="studio-select" aria-label="Key root"></select>
           <select id="key-mode-select" class="studio-select" aria-label="Scale mode">
@@ -42,48 +45,66 @@
           <button id="auto-key-btn" type="button" class="studio-btn is-sm is-cyan is-active" title="Automatically adapt key window to pressed chords">Auto-Key</button>
         </div>
 
-        <div class="control-group">
-          <span class="control-label">Sound</span>
-          <select id="instrument-select" class="studio-select" aria-label="Instrument timbre">
-            <option value="feltPiano">Felt Piano</option>
-            <option value="rhodes">Rhodes EP</option>
-            <option value="guitar">Acoustic Guitar</option>
-            <option value="synthPad">Warm Synth</option>
-          </select>
-          <select id="play-style-select" class="studio-select" aria-label="Chord play style">
-            <option value="strum">Strum</option>
-            <option value="block">Block</option>
-            <option value="arp">Arpeggio</option>
-          </select>
-          <select id="groove-select" class="studio-select" aria-label="Backing drum groove">
-            <option value="pop">Pop Beat</option>
-            <option value="lofi">Lo-Fi Swing</option>
-            <option value="indie">Indie 8ths</option>
-            <option value="ballad">Ballad</option>
-            <option value="click">Metronome</option>
-            <option value="off">Drums Off</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <span class="control-label">BPM</span>
-          <input id="bpm-slider" class="bpm-slider" type="range" min="45" max="200" value="100" aria-label="Tempo BPM" />
-          <span id="bpm-readout" class="bpm-readout">100 BPM</span>
-          <button id="tap-tempo-btn" type="button" class="studio-btn is-sm">Tap</button>
-        </div>
-
-        <div class="control-group">
-          <span class="control-label">Space</span>
-          <input id="reverb-slider" class="reverb-slider" type="range" min="0" max="100" value="28" aria-label="Reverb amount" />
-          <canvas id="audio-visualizer" class="viz-canvas" aria-label="Live audio spectrum"></canvas>
+        <div class="header-quick-btns">
+          <button id="mobile-drawer-btn" type="button" class="studio-btn is-sm mobile-only" aria-expanded="false">⚙ Sound &amp; Export</button>
+          <button id="help-guide-btn" type="button" class="studio-btn is-sm is-ghost" title="Quick Studio Guide &amp; Touch Gestures">?</button>
         </div>
       </div>
 
-      <div class="header-actions">
-        <button id="export-midi-btn" type="button" class="studio-btn is-sm" title="Download Standard MIDI File (.mid)">MIDI</button>
-        <button id="export-wav-btn" type="button" class="studio-btn is-sm" title="Render &amp; Download Studio Audio (.wav)">WAV</button>
-        <button id="lead-sheet-btn" type="button" class="studio-btn is-sm" title="View &amp; Print Songwriter Lead Sheet">Lead Sheet</button>
-        <button id="reset-song-btn" type="button" class="studio-btn is-sm is-ghost" title="Clear all sections and start fresh">New</button>
+      <div id="header-drawer" class="header-drawer">
+        <div class="header-controls">
+          <div class="control-group">
+            <span class="control-label">Sound</span>
+            <select id="instrument-select" class="studio-select" aria-label="Instrument timbre">
+              <option value="feltPiano">Felt Piano</option>
+              <option value="rhodes">Rhodes EP</option>
+              <option value="guitar">Acoustic Guitar</option>
+              <option value="synthPad">Warm Synth</option>
+              <option value="organ">Warm Organ</option>
+              <option value="synthPluck">80s Synth Pluck</option>
+            </select>
+            <select id="play-style-select" class="studio-select" aria-label="Chord play style">
+              <option value="strum">Strum</option>
+              <option value="block">Block</option>
+              <option value="arp">Arpeggio</option>
+            </select>
+            <select id="bass-feel-select" class="studio-select" aria-label="Bass feel">
+              <option value="root">Root Bass</option>
+              <option value="octave">Octave Pulse</option>
+            </select>
+            <select id="groove-select" class="studio-select" aria-label="Backing drum groove">
+              <option value="pop">Pop Beat</option>
+              <option value="lofi">Lo-Fi Swing</option>
+              <option value="indie">Indie 8ths</option>
+              <option value="ballad">Ballad</option>
+              <option value="shuffle">50s/60s Shuffle</option>
+              <option value="bossa">Bossa Nova</option>
+              <option value="click">Metronome</option>
+              <option value="off">Drums Off</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">BPM</span>
+            <input id="bpm-slider" class="bpm-slider" type="range" min="45" max="200" value="100" aria-label="Tempo BPM" />
+            <span id="bpm-readout" class="bpm-readout">100 BPM</span>
+            <button id="tap-tempo-btn" type="button" class="studio-btn is-sm">Tap</button>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">Space</span>
+            <input id="reverb-slider" class="reverb-slider" type="range" min="0" max="100" value="28" aria-label="Reverb amount" />
+            <canvas id="audio-visualizer" class="viz-canvas" aria-label="Live audio spectrum"></canvas>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="share-song-btn" type="button" class="studio-btn is-sm is-cyan is-active" title="Copy shareable song URL link">🔗 Share</button>
+          <button id="export-midi-btn" type="button" class="studio-btn is-sm" title="Download Standard MIDI File (.mid)">MIDI</button>
+          <button id="export-wav-btn" type="button" class="studio-btn is-sm" title="Render &amp; Download Studio Audio (.wav)">WAV</button>
+          <button id="lead-sheet-btn" type="button" class="studio-btn is-sm" title="View &amp; Print Songwriter Lead Sheet">Lead Sheet</button>
+          <button id="reset-song-btn" type="button" class="studio-btn is-sm is-ghost" title="Clear all sections and start fresh">New</button>
+        </div>
       </div>
     </header>
 
@@ -98,6 +119,7 @@
           </div>
 
           <div class="header-actions">
+            <button id="recipes-btn" type="button" class="studio-btn is-sm" title="Load classic songwriting progression formulas">✦ Recipes</button>
             <button id="voice-leading-btn" type="button" class="studio-btn is-sm is-cyan is-active" title="Smoothly invert chords for seamless voice-leading">Smooth Voicing</button>
             <select id="ext-mode-select" class="studio-select" aria-label="Chord extensions">
               <option value="triad">Triads</option>
@@ -135,12 +157,17 @@
 
         <div id="progression-strip" class="progression-strip" aria-label="Active chord progression"></div>
 
+        <div id="compact-match-bar" class="compact-match-bar"></div>
+
         <div class="prog-actions">
           <div class="prog-action-left">
-            <button id="undo-chord-btn" type="button" class="studio-btn is-sm">Undo (Backspace)</button>
-            <button id="clear-combo-btn" type="button" class="studio-btn is-sm">Clear Combo (Esc)</button>
+            <button id="transpose-down-btn" type="button" class="studio-btn is-sm" title="Transpose chords and melody down 1 semitone">♭ -1</button>
+            <button id="transpose-up-btn" type="button" class="studio-btn is-sm" title="Transpose chords and melody up 1 semitone">♯ +1</button>
+            <button id="undo-chord-btn" type="button" class="studio-btn is-sm" title="Undo last edit (Ctrl+Z or Backspace)">Undo</button>
+            <button id="redo-btn" type="button" class="studio-btn is-sm" title="Redo (Ctrl+Y)">Redo</button>
+            <button id="clear-combo-btn" type="button" class="studio-btn is-sm" title="Clear active chords (Esc)">Clear</button>
           </div>
-          <span id="prog-summary-text" class="song-meta-text">Tip: Shift+Click any wedge to audition without adding</span>
+          <span id="prog-summary-text" class="song-meta-text">Tap outer bezel to set key • Long-press or Shift+Click to audition</span>
         </div>
       </section>
 
@@ -205,15 +232,15 @@
         <div id="panel-voicings" class="intel-panel">
           <div class="voicing-box-title">
             <span id="voicing-chord-title">Selected Chord: C Major</span>
-            <span class="song-meta-text">Click any chord card or wheel wedge to inspect</span>
+            <span class="song-meta-text">Tap diagram to hear voicing</span>
           </div>
           <div class="voicing-grid">
-            <div class="voicing-box">
-              <div class="voicing-box-title"><span>Piano Voicing</span><span class="song-meta-text">Voice-Led</span></div>
+            <div class="voicing-box is-clickable" title="Tap to play piano voicing">
+              <div class="voicing-box-title"><span>Piano Voicing</span><span class="song-meta-text">Tap to hear</span></div>
               <div id="piano-diagram-box"></div>
             </div>
-            <div class="voicing-box">
-              <div class="voicing-box-title"><span>Guitar Diagram</span><span class="song-meta-text">Standard EADGBE</span></div>
+            <div class="voicing-box is-clickable" title="Tap to strum guitar voicing">
+              <div class="voicing-box-title"><span>Guitar Diagram</span><span class="song-meta-text">Tap to strum</span></div>
               <div id="guitar-diagram-box"></div>
             </div>
           </div>
@@ -224,6 +251,7 @@
             </div>
             <div id="capo-advisor-list" class="capo-list"></div>
           </div>
+          <div id="scale-notes-bar" class="arrangement-box"></div>
         </div>
 
         <!-- Tab 3: Lyrics, Syllable Meter & Arrangement -->
@@ -273,6 +301,7 @@
           <button id="octave-down-btn" type="button" class="studio-btn is-sm">Oct -</button>
           <span id="octave-readout" class="song-meta-text">C4–E5</span>
           <button id="octave-up-btn" type="button" class="studio-btn is-sm">Oct +</button>
+          <button id="piano-size-btn" type="button" class="studio-btn is-sm" title="Toggle 1-Octave large touch keys vs 2-Octave keyboard">2 Oct</button>
           <select id="melody-style-select" class="studio-select" aria-label="Melody generator style">
             <option value="popHook">Pop Hook</option>
             <option value="lyrical">Lyrical Verse</option>
@@ -292,8 +321,55 @@
     </section>
   </div>
 
+  <!-- Sticky Mobile Bottom Nav & Transport Bar (shown on <= 860px) -->
+  <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Mobile workspace navigation">
+    <button id="mob-nav-wheel" type="button" class="mob-nav-btn is-active">
+      <span class="mob-nav-icon">◎</span>
+      <span class="mob-nav-label">Wheel</span>
+    </button>
+    <button id="mob-nav-songs" type="button" class="mob-nav-btn">
+      <span class="mob-nav-icon">🎵</span>
+      <span class="mob-nav-label">Songs <span id="mob-songs-count" class="mob-badge">0</span></span>
+    </button>
+    <button id="mob-play-btn" type="button" class="mob-nav-btn is-play">
+      <span class="mob-nav-icon">▶</span>
+      <span class="mob-nav-label">Play</span>
+    </button>
+    <button id="mob-nav-melody" type="button" class="mob-nav-btn">
+      <span class="mob-nav-icon">🎹</span>
+      <span class="mob-nav-label">Melody</span>
+    </button>
+    <button id="mob-nav-tools" type="button" class="mob-nav-btn">
+      <span class="mob-nav-icon">🎸</span>
+      <span class="mob-nav-label">Tools</span>
+    </button>
+  </nav>
+
   <!-- Chord Spice / Reharmonize Popover -->
   <div id="reharm-popover" class="reharm-popover" role="dialog" aria-label="Chord Spice and Reharmonization"></div>
+
+  <!-- Progression Recipes Modal -->
+  <dialog id="recipes-dialog" class="studio-dialog">
+    <div class="voicing-box-title" style="margin-bottom: 10px;">
+      <span style="font-size: 15px; font-weight: 700;">Songwriting Progression Recipes (Current Key)</span>
+      <button id="close-recipes-btn" type="button" class="studio-btn is-sm is-ghost">Close</button>
+    </div>
+    <div id="recipes-list" class="recipes-list"></div>
+  </dialog>
+
+  <!-- Quick Studio Guide Modal -->
+  <dialog id="guide-dialog" class="studio-dialog">
+    <div class="voicing-box-title" style="margin-bottom: 10px;">
+      <span style="font-size: 15px; font-weight: 700;">Orbital Fifths — Quick Songwriter Guide</span>
+      <button id="close-guide-btn" type="button" class="studio-btn is-sm is-ghost">Close</button>
+    </div>
+    <div class="guide-body">
+      <p><strong>Circle of Fifths:</strong> Outer ring = <em>Major</em>, middle ring = <em>Relative Minor</em>, inner ring = <em>Diminished</em>. The golden window frames the 7 chords naturally in your current key.</p>
+      <p><strong>Touch &amp; Mouse Controls:</strong> Tap any chord wedge to hear its tone and add it to your combo. <strong>Long-press</strong> on touchscreens (or <strong>Shift+Click / Right-Click</strong> on desktop) to audition without adding. Tap the outer key-signature bezel anytime to rotate keys.</p>
+      <p><strong>Narrowing 9,505 Songs:</strong> Every chord pressed narrows matching hits from 1900s–2020s across both exact keys and transposed patterns. Tap any green <em>Where Hit Songs Go Next</em> chip to append the most common next chord.</p>
+      <p><strong>Keyboard Shortcuts:</strong> <code>Space</code> Play/Stop • <code>Ctrl+Z</code> / <code>Ctrl+Y</code> Undo/Redo • <code>Esc</code> Close or Clear • <code>A–L</code> / <code>W–P</code> Play lead synth keys.</p>
+    </div>
+  </dialog>
 
   <!-- Lead Sheet Modal -->
   <dialog id="lead-sheet-dialog" class="studio-dialog">
