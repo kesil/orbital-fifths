@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbital Fifths — Songwriter &amp; Melody Studio</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script defer src="js/theory.js"></script>
+  <script defer src="js/songs.js"></script>
+  <script defer src="js/audio.js"></script>
+  <script defer src="js/wheel.js"></script>
+  <script defer src="js/melody.js"></script>
+  <script defer src="js/export.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div class="studio-app">
+    <!-- Top Studio Header -->
+    <header class="studio-header">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">
+          <div class="brand-mark-inner">V</div>
+        </div>
+        <div class="brand-titles">
+          <span class="brand-name">Orbital Fifths</span>
+          <input id="song-title-input" class="song-title-input" type="text" value="Untitled Song Sketch" aria-label="Song title" />
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="control-group">
+          <span class="control-label">Key</span>
+          <select id="key-root-select" class="studio-select" aria-label="Key root"></select>
+          <select id="key-mode-select" class="studio-select" aria-label="Scale mode">
+            <option value="major">Major</option>
+            <option value="minor">Natural Minor</option>
+            <option value="dorian">Dorian</option>
+            <option value="mixolydian">Mixolydian</option>
+            <option value="lydian">Lydian</option>
+            <option value="phrygian">Phrygian</option>
+          </select>
+          <button id="auto-key-btn" type="button" class="studio-btn is-sm is-cyan is-active" title="Automatically adapt key window to pressed chords">Auto-Key</button>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Sound</span>
+          <select id="instrument-select" class="studio-select" aria-label="Instrument timbre">
+            <option value="feltPiano">Felt Piano</option>
+            <option value="rhodes">Rhodes EP</option>
+            <option value="guitar">Acoustic Guitar</option>
+            <option value="synthPad">Warm Synth</option>
+          </select>
+          <select id="play-style-select" class="studio-select" aria-label="Chord play style">
+            <option value="strum">Strum</option>
+            <option value="block">Block</option>
+            <option value="arp">Arpeggio</option>
+          </select>
+          <select id="groove-select" class="studio-select" aria-label="Backing drum groove">
+            <option value="pop">Pop Beat</option>
+            <option value="lofi">Lo-Fi Swing</option>
+            <option value="indie">Indie 8ths</option>
+            <option value="ballad">Ballad</option>
+            <option value="click">Metronome</option>
+            <option value="off">Drums Off</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">BPM</span>
+          <input id="bpm-slider" class="bpm-slider" type="range" min="45" max="200" value="100" aria-label="Tempo BPM" />
+          <span id="bpm-readout" class="bpm-readout">100 BPM</span>
+          <button id="tap-tempo-btn" type="button" class="studio-btn is-sm">Tap</button>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Space</span>
+          <input id="reverb-slider" class="reverb-slider" type="range" min="0" max="100" value="28" aria-label="Reverb amount" />
+          <canvas id="audio-visualizer" class="viz-canvas" aria-label="Live audio spectrum"></canvas>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="export-midi-btn" type="button" class="studio-btn is-sm" title="Download Standard MIDI File (.mid)">MIDI</button>
+        <button id="export-wav-btn" type="button" class="studio-btn is-sm" title="Render &amp; Download Studio Audio (.wav)">WAV</button>
+        <button id="lead-sheet-btn" type="button" class="studio-btn is-sm" title="View &amp; Print Songwriter Lead Sheet">Lead Sheet</button>
+        <button id="reset-song-btn" type="button" class="studio-btn is-sm is-ghost" title="Clear all sections and start fresh">New</button>
+      </div>
+    </header>
+
+    <!-- Upper 2-Column Workbench -->
+    <main class="workbench-grid">
+      <!-- Left Column: Interactive Circle of Fifths + Progression Builder -->
+      <section class="studio-card left-column">
+        <div class="wheel-toolbar">
+          <div class="segmented-group" role="group" aria-label="Wheel click mode">
+            <button id="mode-build-btn" type="button" class="seg-btn is-active">+ Build Combo</button>
+            <button id="mode-audition-btn" type="button" class="seg-btn">Audition Only</button>
+          </div>
+
+          <div class="header-actions">
+            <button id="voice-leading-btn" type="button" class="studio-btn is-sm is-cyan is-active" title="Smoothly invert chords for seamless voice-leading">Smooth Voicing</button>
+            <select id="ext-mode-select" class="studio-select" aria-label="Chord extensions">
+              <option value="triad">Triads</option>
+              <option value="diatonic7">Auto 7ths</option>
+              <option value="maj7">maj7</option>
+              <option value="m7">m7</option>
+              <option value="7">Dom 7</option>
+              <option value="sus2">sus2</option>
+              <option value="sus4">sus4</option>
+              <option value="add9">add9</option>
+              <option value="9">9th</option>
+              <option value="6">6th</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="cof-wheel-container" class="wheel-stage"></div>
+
+        <div class="wheel-legend">
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--gold);"></span>Tonic (Home)</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--cyan);"></span>Subdominant (Lift)</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--coral);"></span>Dominant (Pull)</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--violet);"></span>Borrowed / Sec. Dom</span>
+          <span class="legend-item"><span class="legend-swatch" style="background: var(--emerald);"></span>Suggested Next</span>
+        </div>
+
+        <div class="section-bar">
+          <div id="section-tabs" class="section-tabs" role="tablist" aria-label="Song sections"></div>
+          <div class="section-transport">
+            <button id="play-loop-btn" type="button" class="studio-btn is-primary" title="Play or Stop active section loop (Space)">▶ Play Loop</button>
+            <button id="play-arrangement-btn" type="button" class="studio-btn is-sm" title="Play full song arrangement chain">Play All</button>
+            <button id="suggest-section-btn" type="button" class="studio-btn is-sm" title="Generate a contrasting progression for this section">Suggest Section</button>
+          </div>
+        </div>
+
+        <div id="progression-strip" class="progression-strip" aria-label="Active chord progression"></div>
+
+        <div class="prog-actions">
+          <div class="prog-action-left">
+            <button id="undo-chord-btn" type="button" class="studio-btn is-sm">Undo (Backspace)</button>
+            <button id="clear-combo-btn" type="button" class="studio-btn is-sm">Clear Combo (Esc)</button>
+          </div>
+          <span id="prog-summary-text" class="song-meta-text">Tip: Shift+Click any wedge to audition without adding</span>
+        </div>
+      </section>
+
+      <!-- Right Column: Songwriter Intelligence Panel -->
+      <section class="studio-card right-column">
+        <div class="intel-tabs" role="tablist">
+          <button id="intel-tab-songs" type="button" class="intel-tab is-active" role="tab" aria-selected="true">Hit Song Matcher</button>
+          <button id="intel-tab-voicings" type="button" class="intel-tab" role="tab" aria-selected="false">Voicings &amp; Capo Lab</button>
+          <button id="intel-tab-lyrics" type="button" class="intel-tab" role="tab" aria-selected="false">Lyrics &amp; Arrangement</button>
+        </div>
+
+        <!-- Tab 1: Hit Song Matcher -->
+        <div id="panel-songs" class="intel-panel is-active">
+          <div class="narrowing-banner">
+            <div class="narrowing-top">
+              <span id="narrowing-title" class="narrowing-title">Press chords on the wheel to discover matching songs</span>
+              <span id="narrowing-count-badge" class="narrowing-count-badge">0 / 0</span>
+            </div>
+            <div class="narrowing-bar-track">
+              <div id="narrowing-bar-fill" class="narrowing-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div id="next-chords-bar" class="next-chords-bar"></div>
+          </div>
+
+          <div class="song-filters">
+            <div class="segmented-group">
+              <button id="match-pattern-btn" type="button" class="seg-btn is-active" title="Match progression pattern across any key">All Keys (Pattern)</button>
+              <button id="match-exact-btn" type="button" class="seg-btn" title="Match exact chord pitches only">Exact Key</button>
+            </div>
+            <div class="segmented-group">
+              <button id="pos-any-btn" type="button" class="seg-btn is-active" title="Match anywhere in the song's loop">Any Position</button>
+              <button id="pos-start-btn" type="button" class="seg-btn" title="Match only songs starting with this combo">Starts With</button>
+            </div>
+            <select id="genre-filter-select" class="studio-select" aria-label="Filter by genre">
+              <option value="ALL">All Genres</option>
+            </select>
+            <input id="song-search-input" class="song-search-input" type="search" placeholder="Search song or artist..." aria-label="Search songs" />
+          </div>
+
+          <div id="song-list" class="song-list" aria-live="polite"></div>
+        </div>
+
+        <!-- Tab 2: Voicings & Guitar Capo Lab -->
+        <div id="panel-voicings" class="intel-panel">
+          <div class="voicing-box-title">
+            <span id="voicing-chord-title">Selected Chord: C Major</span>
+            <span class="song-meta-text">Click any chord card or wheel wedge to inspect</span>
+          </div>
+          <div class="voicing-grid">
+            <div class="voicing-box">
+              <div class="voicing-box-title"><span>Piano Voicing</span><span class="song-meta-text">Voice-Led</span></div>
+              <div id="piano-diagram-box"></div>
+            </div>
+            <div class="voicing-box">
+              <div class="voicing-box-title"><span>Guitar Diagram</span><span class="song-meta-text">Standard EADGBE</span></div>
+              <div id="guitar-diagram-box"></div>
+            </div>
+          </div>
+          <div class="arrangement-box">
+            <div class="voicing-box-title">
+              <span>Guitar Capo Advisor (Full Progression)</span>
+              <span class="song-meta-text">Ranked for open-chord ease</span>
+            </div>
+            <div id="capo-advisor-list" class="capo-list"></div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Lyrics, Syllable Meter & Arrangement -->
+        <div id="panel-lyrics" class="intel-panel">
+          <div class="voicing-box-title">
+            <span id="lyric-section-label">Verse Lyrics &amp; Meter</span>
+            <span class="song-meta-text">Live syllable count + end-word rhyme groups</span>
+          </div>
+          <div class="lyrics-workspace">
+            <textarea id="lyric-editor" class="lyric-editor" placeholder="Write lyrics for this section here...&#10;Each line automatically counts syllables&#10;And highlights end-word rhymes on the right."></textarea>
+            <div id="syllable-meter-list" class="syllable-meter-list"></div>
+          </div>
+
+          <div class="arrangement-box">
+            <div class="voicing-box-title">
+              <span>Song Arrangement Timeline</span>
+              <span class="song-meta-text">Used by Play All &amp; MIDI/WAV export</span>
+            </div>
+            <div id="arrangement-chain" class="arrangement-chain"></div>
+            <div class="header-actions">
+              <select id="add-arr-section-select" class="studio-select" aria-label="Add section to arrangement">
+                <option value="Verse">Verse</option>
+                <option value="Pre-Chorus">Pre-Chorus</option>
+                <option value="Chorus">Chorus</option>
+                <option value="Bridge">Bridge</option>
+              </select>
+              <button id="add-arr-btn" type="button" class="studio-btn is-sm">+ Append Section</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Lower Studio Panel: Chord-Tone Piano Roll & Playable Keyboard -->
+    <section class="lower-melody-panel">
+      <div class="melody-header">
+        <div class="melody-title-wrap">
+          <button id="melody-toggle-btn" type="button" class="studio-btn is-sm">▾ Melody Studio</button>
+          <span class="melody-heading">Chord-Aware Piano Roll &amp; Topline Synth</span>
+          <div class="melody-legend">
+            <span class="legend-item"><span class="legend-swatch" style="background: var(--gold);"></span>Chord Tone</span>
+            <span class="legend-item"><span class="legend-swatch" style="background: var(--cyan);"></span>In-Key Scale</span>
+          </div>
+        </div>
+
+        <div class="melody-controls">
+          <button id="octave-down-btn" type="button" class="studio-btn is-sm">Oct -</button>
+          <span id="octave-readout" class="song-meta-text">C4–E5</span>
+          <button id="octave-up-btn" type="button" class="studio-btn is-sm">Oct +</button>
+          <select id="melody-style-select" class="studio-select" aria-label="Melody generator style">
+            <option value="popHook">Pop Hook</option>
+            <option value="lyrical">Lyrical Verse</option>
+            <option value="arpeggio">Indie Arp</option>
+            <option value="soul">Soul R&amp;B</option>
+          </select>
+          <button id="spark-melody-btn" type="button" class="studio-btn is-sm is-primary">✦ Spark Melody</button>
+          <button id="mutate-melody-btn" type="button" class="studio-btn is-sm">Mutate</button>
+          <button id="clear-melody-btn" type="button" class="studio-btn is-sm is-ghost">Clear</button>
+        </div>
+      </div>
+
+      <div id="melody-body" class="melody-body">
+        <div id="melody-roll" class="roll-scroll"></div>
+        <div id="playable-piano" class="piano-stage-wrap"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Chord Spice / Reharmonize Popover -->
+  <div id="reharm-popover" class="reharm-popover" role="dialog" aria-label="Chord Spice and Reharmonization"></div>
+
+  <!-- Lead Sheet Modal -->
+  <dialog id="lead-sheet-dialog" class="studio-dialog">
+    <div class="voicing-box-title" style="margin-bottom: 10px;">
+      <span style="font-size: 15px; font-weight: 700;">Songwriter Lead Sheet</span>
+      <div class="header-actions">
+        <button id="copy-lead-sheet-btn" type="button" class="studio-btn is-sm is-primary">Copy Text</button>
+        <button id="print-lead-sheet-btn" type="button" class="studio-btn is-sm">Print</button>
+        <button id="close-lead-sheet-btn" type="button" class="studio-btn is-sm is-ghost">Close</button>
+      </div>
+    </div>
+    <pre id="lead-sheet-pre" class="lead-sheet-pre"></pre>
+  </dialog>
+
+  <div id="toast-banner" class="toast-banner" role="status" aria-live="polite"></div>
+</body>
+</html>
